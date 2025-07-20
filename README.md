@@ -1,5 +1,12 @@
 # Incident Report Platform for Colleges
 
+[![Deployed on Render](https://img.shields.io/badge/Deployed-Render-blue)](https://incident-report-app.onrender.com)
+
+## Live Demo
+
+You can access the live project here:  
+[https://incident-report-app.onrender.com](https://incident-report-app.onrender.com)
+
 A full-stack web platform for college students to anonymously report harassment or ragging incidents. Includes admin review, evidence upload, referral codes, complaint tracking, and more.
 
 ## Features
