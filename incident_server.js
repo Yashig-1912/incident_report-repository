@@ -56,6 +56,7 @@ const upload = multer({
 // Submit a report
 app.post('/api/report', upload.single('evidence'), async (req, res) => {
   try {
+    console.log('Received complaint submission:', req.body);
     const {
       college = 'None',
       type,
@@ -96,9 +97,12 @@ app.post('/api/report', upload.single('evidence'), async (req, res) => {
       status: 'Active',
       timestamp: new Date().toISOString()
     };
+    console.log('Prepared report object:', report);
     await saveReport(report);
+    console.log('Saved report to Firestore:', report.code);
     res.json({ message: 'Report submitted successfully.', code });
   } catch (err) {
+    console.error('Error in /api/report:', err);
     res.status(500).json({ message: err.message || 'Server error' });
   }
 });
