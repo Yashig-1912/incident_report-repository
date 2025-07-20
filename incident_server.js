@@ -3,6 +3,7 @@ import { existsSync, readFileSync, writeFileSync, createWriteStream, mkdirSync }
 import { join, dirname, extname } from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
+import path from 'path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -10,9 +11,12 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(cors());
 app.use(express.json());
-app.use(express.static('incident_public'));
-app.use('/admin', express.static('incident_admin'));
-app.use(express.static('.'));
+console.log('Project root:', __dirname);
+console.log('Serving incident_public from:', path.join(__dirname, 'incident-report-frontend', 'incident_public'));
+console.log('Serving incident_admin from:', path.join(__dirname, 'incident-report-frontend', 'incident_admin'));
+app.use('/incident_public', express.static(path.join(__dirname, 'incident-report-frontend', 'incident_public')));
+app.use('/incident_admin', express.static(path.join(__dirname, 'incident-report-frontend', 'incident_admin')));
+app.use(express.static(__dirname));
 
 // Evidence upload support
 import multer from 'multer';
