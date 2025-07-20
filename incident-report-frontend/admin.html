@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Admin - Incident Reports</title>
     <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3064/3064197.png">
-    <link rel="stylesheet" href="../incident_public/incident_style.css">
+    <link rel="stylesheet" href="incident_style.css">
     <style>
         .admin-header {
             text-align: center;
@@ -336,7 +336,7 @@
                 document.querySelectorAll('.track-btn').forEach(btn => {
                     btn.onclick = function() {
                         const code = btn.getAttribute('data-code');
-                        window.open(`/incident_public/track.html?code=${code}&admin=1`, '_blank');
+                        window.open(`track.html?code=${code}&admin=1`, '_blank');
                     };
                 });
                 document.querySelectorAll('.desc-more-link').forEach(link => {
@@ -400,8 +400,8 @@
                     document.getElementById('reports').innerHTML = '';
                     return;
                 } else {
-                    // If login form is refreshed, redirect to user page
-                    window.location.href = '../incident_public/incident_index.html';
+                    // If login form is refreshed, redirect to incident_index.html
+                    window.location.href = 'incident_index.html';
                     return;
                 }
             }

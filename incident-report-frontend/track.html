@@ -41,6 +41,18 @@
         <div id="remarksSection" class="remarks-section" style="display:none;"></div>
     </div>
     <script>
+    // Redirect to index page on refresh unless a code is present or details are visible
+    const params = new URLSearchParams(window.location.search);
+    const detailsVisible = document.getElementById('trackDetails') && document.getElementById('trackDetails').style.display !== 'none';
+    if (performance.navigation.type === 1) { // 1 means reload/refresh
+        if (params.get('code')) {
+            // Remove code from URL and reload as blank track page
+            window.location.replace('track.html');
+        } else {
+            // No code, redirect to index
+            window.location.href = 'incident_index.html';
+        }
+    }
     // Helper: get code from URL
     function getCodeFromURL() {
         const params = new URLSearchParams(window.location.search);
@@ -62,7 +74,8 @@
         e.preventDefault();
         const code = document.getElementById('trackCodeInput').value.trim();
         if (!code) return;
-        fetchAndDisplay(code);
+        // Update the URL to include the code and reload
+        window.location.href = `track.html?code=${encodeURIComponent(code)}`;
     };
     async function fetchAndDisplay(code) {
         currentCode = code;

@@ -14,9 +14,13 @@ app.use(express.json());
 console.log('Project root:', __dirname);
 console.log('Serving incident_public from:', path.join(__dirname, 'incident-report-frontend', 'incident_public'));
 console.log('Serving incident_admin from:', path.join(__dirname, 'incident-report-frontend', 'incident_admin'));
-app.use('/incident_public', express.static(path.join(__dirname, 'incident-report-frontend', 'incident_public')));
-app.use('/incident_admin', express.static(path.join(__dirname, 'incident-report-frontend', 'incident_admin')));
-app.use(express.static(__dirname));
+// Serve all static files from the root of incident-report-frontend
+app.use(express.static(path.join(__dirname, 'incident-report-frontend')));
+
+// Redirect root to incident_index.html
+app.get('/', (req, res) => {
+  res.redirect('/incident_index.html');
+});
 
 // Evidence upload support
 import multer from 'multer';

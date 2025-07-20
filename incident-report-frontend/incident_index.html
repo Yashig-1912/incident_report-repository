@@ -256,7 +256,7 @@
         </div>
     </div>
     <div style="display: flex; justify-content: flex-end; margin-top: 16px; width: 100%; max-width: 480px; margin-left: auto; margin-right: auto;">
-        <button onclick="window.location.href='../incident_admin/admin.html'" style="padding:8px 16px; font-size:1rem; background:#2d3e50; color:white; border:none; border-radius:4px; cursor:pointer;">Admin Login</button>
+        <button onclick="window.location.href='admin.html'" style="padding:8px 16px; font-size:1rem; background:#2d3e50; color:white; border:none; border-radius:4px; cursor:pointer;">Admin Login</button>
     </div>
     <script>
         // Show/hide form or track section
@@ -265,7 +265,7 @@
             document.getElementById('reportForm').style.display = '';
         };
         document.getElementById('trackBtn').onclick = function() {
-            window.location.href = '/incident_public/track.html';
+            window.location.href = 'track.html';
         };
         // Show custom type input if "Other" is selected
         document.getElementById('typeSelect').onchange = function() {
