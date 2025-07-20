@@ -2,11 +2,13 @@ import express from 'express';
 import { existsSync, readFileSync, writeFileSync, createWriteStream, mkdirSync } from 'fs';
 import { join, dirname, extname } from 'path';
 import { fileURLToPath } from 'url';
+import cors from 'cors';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 // Middleware
+app.use(cors());
 app.use(express.json());
 app.use(express.static('incident_public'));
 app.use('/admin', express.static('incident_admin'));
