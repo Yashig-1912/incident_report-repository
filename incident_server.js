@@ -50,7 +50,6 @@ const upload = multer({
 
 // Store reports in a JSON file
 const REPORTS_FILE = join(__dirname, 'incident_reports.json');
-const REPORTS_CSV = join(__dirname, 'incident_reports.csv');
 const EVIDENCE_FILE = join(__dirname, 'evidence.json');
 const REMARKS_FILE = join(__dirname, 'remarks.json');
 
@@ -63,19 +62,6 @@ function saveReport(report) {
     const reports = getReports();
     reports.push(report);
     writeFileSync(REPORTS_FILE, JSON.stringify(reports, null, 2));
-}
-
-// Helper to append report to CSV
-function saveReportCSV(report) {
-    const headers = ['code','college','type','description','date','time','location','accused','evidenceDesc','studentDetails','seriousness','status','timestamp'];
-    const values = headers.map(h => (report[h] || '').replace(/"/g, '""'));
-    const row = '"' + values.join('","') + '"\n';
-    let writeHeaders = false;
-    if (!existsSync(REPORTS_CSV)) writeHeaders = true;
-    const stream = createWriteStream(REPORTS_CSV, { flags: 'a' });
-    if (writeHeaders) stream.write(headers.join(',') + '\n');
-    stream.write(row);
-    stream.end();
 }
 
 function saveEvidenceInfo(code, type, filename) {
@@ -92,7 +78,18 @@ function generateCode() {
 // API: Submit a report (with evidence upload)
 app.post('/api/report', upload.single('evidence'), async (req, res) => {
     try {
-        const { college, type, description, date, time, location, accused, evidenceDesc, studentDetails } = req.body;
+        // Set 'None' for any optional fields if not provided
+        const {
+            college = 'None',
+            type,
+            description,
+            date = 'None',
+            time = 'None',
+            location = 'None',
+            accused = 'None',
+            evidenceDesc = 'None',
+            studentDetails = 'None'
+        } = req.body;
         if (!type || !description) {
             return res.status(400).json({ message: 'Type and description required.' });
         }
@@ -124,7 +121,6 @@ app.post('/api/report', upload.single('evidence'), async (req, res) => {
             timestamp: new Date().toISOString()
         };
         saveReport(report);
-        saveReportCSV(report);
         res.json({ message: 'Report submitted successfully.', code });
     } catch (err) {
         res.status(500).json({ message: err.message || 'Server error' });
