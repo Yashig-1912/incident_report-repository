@@ -1,8 +1,8 @@
-const express = require('express');
-const cors = require('cors');
-const multer = require('multer');
-const path = require('path');
-const {
+import express from 'express';
+import cors from 'cors';
+import multer from 'multer';
+import path from 'path';
+import {
   getReports,
   getReportByCode,
   saveReport,
@@ -10,7 +10,7 @@ const {
   updateStatus,
   getRemarks,
   addRemark
-} = require('./firestoreHelpers');
+} from './firestoreHelpers.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -22,7 +22,7 @@ console.log('Project root:', __dirname);
 console.log('Serving incident_public from:', path.join(__dirname, 'incident-report-frontend', 'incident_public'));
 console.log('Serving incident_admin from:', path.join(__dirname, 'incident-report-frontend', 'incident_admin'));
 // Serve all static files from the root of incident-report-frontend
-app.use(express.static(path.join(__dirname, 'incident-report-frontend')));
+app.use(express.static(path.join(path.resolve(), 'incident-report-frontend')));
 
 // Redirect root to incident_index.html
 app.get('/', (req, res) => {
@@ -30,7 +30,7 @@ app.get('/', (req, res) => {
 });
 
 // Evidence upload support
-const evidenceDir = path.join(__dirname, 'evidence');
+const evidenceDir = path.join(path.resolve(), 'evidence');
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, evidenceDir),
     filename: (req, file, cb) => {

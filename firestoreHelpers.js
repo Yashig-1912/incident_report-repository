@@ -1,4 +1,4 @@
-const admin = require('./firebaseConfig');
+import admin from './firebaseConfig.js';
 const db = admin.firestore();
 
 // Get all reports
@@ -42,7 +42,7 @@ async function addRemark(code, text, who) {
   });
 }
 
-module.exports = {
+export {
   getReports,
   getReportByCode,
   saveReport,
