@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Track Complaint - XYZ University</title>
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1828/1828817.png">
+    <link rel="stylesheet" href="incident_style.css">
+    <style>
+        .track-container { max-width: 600px; margin: 3em auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 16px rgba(0,0,0,0.08); padding: 2em 2em 1.5em 2em; }
+        .track-header { text-align: center; font-size: 1.5em; color: #007bff; margin-bottom: 1em; }
+        .track-form { display: flex; gap: 1em; margin-bottom: 2em; justify-content: center; }
+        .track-form input { padding: 0.7em; border-radius: 6px; border: 1px solid #d0d7de; font-size: 1em; }
+        .track-form button { padding: 0.7em 1.2em; border-radius: 6px; border: none; background: #007bff; color: #fff; font-weight: 600; cursor: pointer; }
+        .track-details { margin-bottom: 2em; }
+        .track-label { font-weight: 600; color: #333; }
+        .track-value { margin-bottom: 0.7em; }
+        .evidence-link { color: #007bff; text-decoration: underline; }
+        .remarks-section { margin-top: 2em; }
+        .remark { background: #f4f6fb; border-radius: 6px; padding: 0.7em 1em; margin-bottom: 0.7em; }
+        .remark-meta { font-size: 0.95em; color: #888; margin-bottom: 0.2em; }
+        .remark-form { display: flex; gap: 0.5em; margin-top: 1em; }
+        .remark-form input { flex: 1; padding: 0.6em; border-radius: 6px; border: 1px solid #d0d7de; }
+        .remark-form select { padding: 0.6em; border-radius: 6px; border: 1px solid #d0d7de; }
+        .remark-form button { padding: 0.6em 1.2em; border-radius: 6px; border: none; background: #007bff; color: #fff; font-weight: 600; cursor: pointer; }
+        .status-row { margin-top: 1.5em; }
+        .status-row select { padding: 0.6em; border-radius: 6px; border: 1px solid #d0d7de; }
+        .status-row label { font-weight: 600; margin-right: 0.5em; }
+        .error-msg { color: #d9363e; margin-bottom: 1em; text-align: center; }
+        .success-msg { color: #1a7f37; margin-bottom: 1em; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="track-container">
+        <div class="track-header">Track Your Complaint</div>
+        <form class="track-form" id="trackForm">
+            <input type="text" id="trackCodeInput" placeholder="Enter your complaint code" required>
+            <button type="submit">Track</button>
+        </form>
+        <div id="trackMsg"></div>
+        <div id="trackDetails" class="track-details" style="display:none;"></div>
+        <div id="remarksSection" class="remarks-section" style="display:none;"></div>
+    </div>
+    <script>
+    // Helper: get code from URL
+    function getCodeFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('code') || '';
+    }
+    // State
+    let currentCode = '';
+    let isAdmin = false;
+    // On page load, check for code in URL
+    window.onload = function() {
+        const code = getCodeFromURL();
+        if (code) {
+            document.getElementById('trackCodeInput').value = code;
+            fetchAndDisplay(code);
+        }
+    };
+    // Track form submit
+    document.getElementById('trackForm').onsubmit = function(e) {
+        e.preventDefault();
+        const code = document.getElementById('trackCodeInput').value.trim();
+        if (!code) return;
+        fetchAndDisplay(code);
+    };
+    async function fetchAndDisplay(code) {
+        currentCode = code;
+        document.getElementById('trackMsg').textContent = '';
+        document.getElementById('trackDetails').style.display = 'none';
+        document.getElementById('remarksSection').style.display = 'none';
+        try {
+            const res = await fetch(`/api/track/${code}`);
+            if (!res.ok) throw new Error('Complaint not found.');
+            const { complaint, evidence, remarks } = await res.json();
+            showDetails(complaint, evidence);
+            showRemarks(remarks);
+        } catch (err) {
+            document.getElementById('trackMsg').textContent = err.message;
+            document.getElementById('trackMsg').className = 'error-msg';
+        }
+    }
+    function showDetails(c, evidence) {
+        let html = '';
+        html += `<div class="track-label">Complaint Code:</div><div class="track-value">${c.code}</div>`;
+        html += `<div class="track-label">Status:</div><div class="track-value">${c.status}</div>`;
+        html += `<div class="track-label">Type:</div><div class="track-value">${c.type}</div>`;
+        html += `<div class="track-label">Date:</div><div class="track-value">${c.date || 'N/A'}</div>`;
+        html += `<div class="track-label">Time:</div><div class="track-value">${c.time || 'N/A'}</div>`;
+        html += `<div class="track-label">Location:</div><div class="track-value">${c.location || 'N/A'}</div>`;
+        html += `<div class="track-label">Description:</div><div class="track-value">${c.description}</div>`;
+        html += `<div class="track-label">Evidence Description:</div><div class="track-value">${c.evidenceDesc || 'N/A'}</div>`;
+        if (evidence && evidence.filename) {
+            html += `<div class="track-label">Evidence File:</div><div class="track-value"><a class="evidence-link" href="/evidence/${evidence.filename}" target="_blank">Download/View</a></div>`;
+        }
+        html += `<div class="track-label">Accused Details:</div><div class="track-value">${c.accused || 'N/A'}</div>`;
+        html += `<div class="track-label">Your Details:</div><div class="track-value">${c.studentDetails || 'N/A'}</div>`;
+        html += `<div class="track-label">Submitted:</div><div class="track-value">${c.timestamp}</div>`;
+        // Status update for admin
+        html += `<div class="status-row"><label>Status:</label> <span id="statusValue">${c.status}</span></div>`;
+        if (isAdmin) {
+            html += `<div class="status-row"><label>Change Status:</label> <select id="statusSelect">
+                <option value="Active" ${c.status==='Active'?'selected':''}>Active</option>
+                <option value="Shut" ${c.status==='Shut'?'selected':''}>Shut</option>
+                <option value="Resolved" ${c.status==='Resolved'?'selected':''}>Resolved</option>
+            </select> <button id="updateStatusBtn">Update</button></div>`;
+        }
+        document.getElementById('trackDetails').innerHTML = html;
+        document.getElementById('trackDetails').style.display = '';
+        if (isAdmin && document.getElementById('updateStatusBtn')) {
+            document.getElementById('updateStatusBtn').onclick = async function() {
+                const newStatus = document.getElementById('statusSelect').value;
+                const res = await fetch('/api/track/status', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code: currentCode, status: newStatus })
+                });
+                const msg = await res.json();
+                document.getElementById('statusValue').textContent = newStatus;
+                document.getElementById('trackMsg').textContent = msg.message;
+                document.getElementById('trackMsg').className = 'success-msg';
+            };
+        }
+    }
+    function showRemarks(remarks) {
+        let html = '<div class="track-label">Remarks:</div>';
+        if (!remarks.length) html += '<div>No remarks yet.</div>';
+        else remarks.forEach(r => {
+            html += `<div class="remark"><div class="remark-meta">${r.who} | ${new Date(r.timestamp).toLocaleString()}</div>${r.text}</div>`;
+        });
+        html += `<form class="remark-form" id="remarkForm">
+            <input type="text" id="remarkInput" placeholder="Add a remark..." required>
+            <button type="submit">Add</button>
+        </form>`;
+        document.getElementById('remarksSection').innerHTML = html;
+        document.getElementById('remarksSection').style.display = '';
+        document.getElementById('remarkForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const text = document.getElementById('remarkInput').value.trim();
+            const who = isAdmin ? 'admin' : 'user';
+            if (!text) return;
+            const res = await fetch('/api/track/remark', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: currentCode, text, who })
+            });
+            const msg = await res.json();
+            if (res.ok) {
+                fetchAndDisplay(currentCode);
+            } else {
+                document.getElementById('trackMsg').textContent = msg.message;
+                document.getElementById('trackMsg').className = 'error-msg';
+            }
+        };
+    }
+    // If coming from admin, set isAdmin=true (e.g., via ?admin=1)
+    if (new URLSearchParams(window.location.search).get('admin') === '1') isAdmin = true;
+    </script>
+</body>
+</html> 

@@ -1,0 +1,18 @@
+{
+  "XYZ College": {
+    "locations": ["Library", "Hostel", "Cafeteria", "Playground", "Classroom", "Corridor", "Other"],
+    "times": ["08:00", "10:00", "12:00", "13:00", "15:00", "17:00"]
+  },
+  "ABC Institute": {
+    "locations": ["Block A", "Block B", "Mess Hall", "Lab 3", "Auditorium", "Other"],
+    "times": ["09:00", "11:00", "13:30", "16:00", "18:00"]
+  },
+  "DEF School of Tech": {
+    "locations": ["Main Building", "Tech Park", "Cafeteria", "Hostel", "Ground", "Other"],
+    "times": ["07:30", "10:30", "12:30", "14:30", "17:30"]
+  },
+  "Other": {
+    "locations": ["Other"],
+    "times": ["Other"]
+  }
+} 

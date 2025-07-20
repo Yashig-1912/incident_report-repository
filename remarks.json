@@ -1,0 +1,21 @@
+{
+  "XYZ-1A2B3C": [
+    {
+      "text": "Initial review by admin.",
+      "who": "admin",
+      "timestamp": "2024-07-20T11:00:00Z"
+    }
+  ],
+  "XYZ-0J1K2L": [
+    {
+      "text": "What action has been taken?",
+      "who": "user",
+      "timestamp": "2025-07-20T07:14:36.229Z"
+    },
+    {
+      "text": "The accused has been questioned. If comfortable, share your details for faster enquiry",
+      "who": "admin",
+      "timestamp": "2025-07-20T07:17:44.336Z"
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    background: #f4f6fb;
+    min-height: 100vh;
+}
+.container {
+    max-width: 500px;
+    margin: 3em auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    padding: 2em 2em 1.5em 2em;
+}
+h2 {
+    text-align: center;
+    color: #222;
+    margin-bottom: 1.5em;
+}
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+label {
+    font-weight: 500;
+    margin-bottom: 0.3em;
+}
+input, select, textarea {
+    padding: 0.7em;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    font-size: 1em;
+    background: #f9f9f9;
+    transition: border 0.2s;
+}
+input:focus, select:focus, textarea:focus {
+    border: 1.5px solid #007bff;
+    outline: none;
+}
+button {
+    padding: 0.8em 1em;
+    border: none;
+    background: #007bff;
+    color: #fff;
+    border-radius: 6px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+button:hover {
+    background: #0056b3;
+}
+#message {
+    margin-top: 1em;
+    color: #1a7f37;
+    text-align: center;
+    font-weight: 500;
+}
+/* Admin Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5em;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+}
+th, td {
+    padding: 0.8em 0.5em;
+    border-bottom: 1px solid #eaeaea;
+    text-align: left;
+}
+th {
+    background: #f4f6fb;
+    font-weight: 600;
+}
+tr:last-child td {
+    border-bottom: none;
+}
+@media (max-width: 600px) {
+    .container {
+        padding: 1em 0.5em;
+    }
+    table, th, td {
+        font-size: 0.95em;
+    }
+} 

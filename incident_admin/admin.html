@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Incident Reports</title>
+    <link rel="icon" type="image/jpeg" href="/admin_img.jpg">
+    <link rel="stylesheet" href="../incident_public/incident_style.css">
+    <style>
+        .admin-header {
+            text-align: center;
+            font-size: 1.7em;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 0.2em;
+            letter-spacing: 1px;
+        }
+        .admin-support {
+            text-align: center;
+            color: #1a7f37;
+            background: #e6f7f1;
+            border-radius: 8px;
+            padding: 1em 1.5em;
+            margin-bottom: 2.2em;
+            font-size: 1.1em;
+        }
+        .admin-container {
+            max-width: 1100px;
+            margin: 3em auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+            padding: 2em 2em 1.5em 2em;
+        }
+        .login-card {
+            max-width: 350px;
+            margin: 2em auto 2.5em auto;
+            background: #f4f6fb;
+            border-radius: 10px;
+            box-shadow: 0 1px 8px rgba(0,0,0,0.07);
+            padding: 2em 2em 1.5em 2em;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 1.2em;
+            display: block;
+        }
+        .login-card input[type="password"] {
+            width: 100%;
+            padding: 0.7em;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+            font-size: 1em;
+            margin-bottom: 1.2em;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .login-card button {
+            width: 100%;
+            padding: 0.8em 0;
+            border-radius: 6px;
+            border: none;
+            background: #007bff;
+            color: #fff;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 0.5em;
+        }
+        .login-card button:hover {
+            background: #0056b3;
+        }
+        .logout-btn {
+            float: right;
+            margin-top: -2.5em;
+            margin-bottom: 1em;
+            background: #ff4d4f;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 0.5em 1.2em;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .logout-btn:hover {
+            background: #d9363e;
+        }
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1em;
+            margin-bottom: 1.5em;
+            align-items: center;
+            background: #f4f6fb;
+            border-radius: 8px;
+            padding: 1em 1.5em;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+        }
+        .filters label {
+            font-weight: 500;
+        }
+        .filters select, .filters input[type="text"] {
+            padding: 0.5em;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+            font-size: 1em;
+        }
+        table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+        }
+        table th, table td {
+            padding: 0.8em 0.5em;
+            border: 1px solid #eaeaea;
+            text-align: left;
+            vertical-align: top;
+            min-width: 90px;
+            max-width: 220px;
+            word-break: break-word;
+            white-space: pre-line;
+        }
+        table th {
+            background: #f4f6fb;
+            font-weight: 600;
+            text-align: left;
+        }
+        table th.code, table td.code { min-width: 110px; max-width: 140px; }
+        table th.college, table td.college { min-width: 120px; max-width: 180px; }
+        table th.type, table td.type { min-width: 110px; max-width: 140px; }
+        table th.date, table td.date, table th.time, table td.time { min-width: 90px; max-width: 120px; }
+        table th.location, table td.location { min-width: 110px; max-width: 140px; }
+        table th.description, table td.description { min-width: 140px; max-width: 260px; }
+        table th.evidenceDesc, table td.evidenceDesc { min-width: 120px; max-width: 180px; }
+        table th.accused, table td.accused { min-width: 120px; max-width: 160px; }
+        table th.studentDetails, table td.studentDetails { min-width: 120px; max-width: 180px; }
+        table th.seriousness, table td.seriousness { min-width: 100px; max-width: 120px; }
+        table th.status, table td.status { min-width: 100px; max-width: 120px; }
+        table th.submitted, table td.submitted { min-width: 160px; max-width: 220px; white-space: nowrap; }
+        table th.track, table td.track { min-width: 100px; max-width: 140px; text-align: center; white-space: nowrap; }
+        table tbody tr:nth-child(even) { background: #f8fafc; }
+        table tbody tr:nth-child(odd) { background: #fff; }
+        .highlight { background: #ffe066; color: #222; border-radius: 3px; padding: 0 2px; }
+        @media (max-width: 700px) {
+            .admin-container { padding: 1em 0.5em; }
+            table, th, td { font-size: 0.95em; }
+            .logout-btn { float: none; display: block; margin: 1em auto; }
+            .filters { flex-direction: column; align-items: stretch; }
+            .login-card { padding: 1.2em 0.5em; }
+        }
+        #loginHeader {
+            text-align: center;
+            margin-bottom: 0.7em;
+        }
+        .code-search-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 1.2em;
+        }
+        .code-search-bar input {
+            padding: 0.6em;
+            border-radius: 6px;
+            border: 1px solid #d0d7de;
+            font-size: 1em;
+            width: 220px;
+        }
+        .desc-more-link {
+            color: #007bff;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 0.97em;
+            margin-left: 0.5em;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="admin-header">XYZ College Admin Dashboard</div>
+        <div class="admin-support">Welcome, Admin! Here you can review all submitted complaints. Please handle all reports with care and confidentiality.</div>
+        <button id="logoutBtn" class="logout-btn" style="display:none;">Logout</button>
+        <div class="code-search-bar" id="codeSearchBar" style="display:none;">
+            <input type="text" id="searchCodeInput" placeholder="Search by complaint code...">
+        </div>
+        <h2 id="loginHeader">Admin Login</h2>
+        <form id="loginForm" class="login-card">
+            <svg class="login-icon" fill="none" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#b2f2e6"/><path d="M24 14a6 6 0 0 1 6 6v2h-12v-2a6 6 0 0 1 6-6zm-8 8v-2a8 8 0 0 1 16 0v2c2.2 0 4 1.8 4 4v8a4 4 0 0 1-4 4H16a4 4 0 0 1-4-4v-8c0-2.2 1.8-4 4-4zm0 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2H16z" fill="#1a7f37"/></svg>
+            <input type="password" id="password" placeholder="Admin Password" required>
+            <button type="submit">Login</button>
+        </form>
+        <div id="filters" class="filters" style="display:none;"></div>
+        <div id="reports"></div>
+    </div>
+    <script>
+        let loggedIn = false;
+        let allReports = [];
+        document.getElementById('loginForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const password = document.getElementById('password').value;
+            const res = await fetch('/api/admin/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password })
+            });
+            if (res.ok) {
+                loggedIn = true;
+                loadReports();
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('logoutBtn').style.display = '';
+                document.getElementById('loginHeader').style.display = 'none';
+                document.getElementById('filters').style.display = '';
+                document.getElementById('codeSearchBar').style.display = '';
+            } else {
+                alert('Incorrect password');
+            }
+        };
+        async function loadReports() {
+            const res = await fetch('/api/admin/reports');
+            const reports = await res.json();
+            allReports = reports;
+            renderFilters(reports);
+            renderTable(reports);
+        }
+        function renderFilters(reports) {
+            // Get unique values for type, location, college
+            const types = Array.from(new Set(reports.map(r => r.type).filter(Boolean)));
+            const locations = Array.from(new Set(reports.map(r => r.location).filter(Boolean)));
+            const times = ["Morning","Lunch","Afternoon","After Dispersal","Other"];
+            const colleges = Array.from(new Set(reports.map(r => r.college).filter(Boolean)));
+            // Build filter UI
+            let html = '';
+            html += '<label>Type: <select id="filterType"><option value="">All</option>' + types.map(t => `<option value="${t}">${t}</option>`).join('') + '</select></label>';
+            html += '<label>Location: <select id="filterLocation"><option value="">All</option>' + locations.map(l => `<option value="${l}">${l}</option>`).join('') + '</select></label>';
+            html += '<label>Time: <select id="filterTime"><option value="">All</option>' + times.map(t => `<option value="${t}">${t}</option>`).join('') + '</select></label>';
+            html += '<label>Description: <input type="text" id="filterDesc" placeholder="Search keywords"></label>';
+            html += '<label>College: <select id="filterCollege"><option value="">All</option>' + colleges.map(c => `<option value="${c}">${c}</option>`).join('') + '</select></label>';
+            document.getElementById('filters').innerHTML = html;
+            // Add event listeners
+            document.getElementById('filterType').onchange = filterAndRender;
+            document.getElementById('filterLocation').onchange = filterAndRender;
+            document.getElementById('filterTime').onchange = filterAndRender;
+            document.getElementById('filterDesc').oninput = filterAndRender;
+            document.getElementById('filterCollege').onchange = filterAndRender;
+        }
+        function filterAndRender() {
+            let filtered = allReports;
+            const type = document.getElementById('filterType').value;
+            const location = document.getElementById('filterLocation').value;
+            const time = document.getElementById('filterTime').value;
+            const desc = document.getElementById('filterDesc').value.trim().toLowerCase();
+            const college = document.getElementById('filterCollege').value;
+            if(type) filtered = filtered.filter(r => r.type === type);
+            if(location) filtered = filtered.filter(r => r.location === location);
+            if(time && rTimeLabel) filtered = filtered.filter(r => rTimeLabel(r.time) === time);
+            if(desc) filtered = filtered.filter(r => (r.description||'').toLowerCase().includes(desc));
+            if(college) filtered = filtered.filter(r => r.college === college);
+            renderTable(filtered);
+        }
+        // Helper to map time to label
+        function rTimeLabel(time) {
+            if(!time) return "Other";
+            const [h,m] = time.split(":").map(Number);
+            if(h < 12) return "Morning";
+            if(h >= 12 && h < 14) return "Lunch";
+            if(h >= 14 && h < 17) return "Afternoon";
+            if(h >= 17) return "After Dispersal";
+            return "Other";
+        }
+        function renderTable(reports) {
+            let html = '<h2>Submitted Reports</h2>';
+            if (reports.length === 0) html += '<p>No reports yet.</p>';
+            else {
+                const descFilter = document.getElementById('filterDesc') ? document.getElementById('filterDesc').value.trim().toLowerCase() : '';
+                html += `<div style="overflow-x:auto;"><table><thead><tr><th>Code</th><th class="college">College</th><th>Type</th><th>Date</th><th>Time</th><th>Location</th><th class="description">Description</th><th class="evidenceDesc">Evidence Desc</th><th>Accused</th><th class="studentDetails">Student Details</th><th>Seriousness</th><th>Status</th><th class="submitted">Submitted</th><th class="track">Track</th></tr></thead><tbody>`;
+                reports.forEach((r, idx) => {
+                    let desc = r.description || '';
+                    let descShort = desc.length > 60 ? desc.slice(0, 60) + '...' : desc;
+                    let showMore = desc.length > 60;
+                    if(descFilter) {
+                        const re = new RegExp(`(${descFilter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                        desc = desc.replace(re, '<span class="highlight">$1</span>');
+                    }
+                    html += `<tr>
+                        <td>${r.code || ''}</td>
+                        <td class="college">${r.college || ''}</td>
+                        <td>${r.type}</td>
+                        <td>${r.date || 'N/A'}</td>
+                        <td>${r.time || 'N/A'}</td>
+                        <td>${r.location || 'N/A'}</td>
+                        <td class="description"><span class="desc-short">${descShort}</span>${showMore ? `<span class="desc-more-link">Show more</span><span class="desc-full" style="display:none;">${desc}</span>` : ''}</td>
+                        <td class="evidenceDesc">${r.evidenceDesc || ''}</td>
+                        <td>${r.accused || ''}</td>
+                        <td class="studentDetails">${r.studentDetails || ''}</td>
+                        <td><select class="seriousness-select" data-idx="${idx}" data-code="${r.code}">
+                            <option value="High" ${r.seriousness==='High'?'selected':''}>High</option>
+                            <option value="Medium" ${r.seriousness==='Medium'?'selected':''}>Medium</option>
+                            <option value="Low" ${r.seriousness==='Low'?'selected':''}>Low</option>
+                        </select></td>
+                        <td>${r.status || ''}</td>
+                        <td class="submitted">${r.timestamp}</td>
+                        <td class="track"><button class="track-btn" data-code="${r.code}">Track</button></td>
+                    </tr>`;
+                });
+                html += '</tbody></table></div>';
+            }
+            document.getElementById('reports').innerHTML = html;
+            setTimeout(() => {
+                document.querySelectorAll('.seriousness-select').forEach(sel => {
+                    sel.onchange = async function() {
+                        const code = this.getAttribute('data-code');
+                        const seriousness = this.value;
+                        await fetch('/api/admin/seriousness', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ code, seriousness })
+                        });
+                        // Optionally, reload reports or show a message
+                    };
+                });
+                document.querySelectorAll('.track-btn').forEach(btn => {
+                    btn.onclick = function() {
+                        const code = btn.getAttribute('data-code');
+                        window.open(`/track.html?code=${code}&admin=1`, '_blank');
+                    };
+                });
+                document.querySelectorAll('.desc-more-link').forEach(link => {
+                    link.onclick = function() {
+                        const short = this.parentElement.querySelector('.desc-short');
+                        const full = this.parentElement.querySelector('.desc-full');
+                        if (full.style.display === 'none') {
+                            full.style.display = '';
+                            short.style.display = 'none';
+                            this.textContent = 'Show less';
+                        } else {
+                            full.style.display = 'none';
+                            short.style.display = '';
+                            this.textContent = 'Show more';
+                        }
+                    };
+                });
+            }, 0);
+        }
+        document.getElementById('logoutBtn').onclick = function() {
+            loggedIn = false;
+            document.getElementById('loginForm').style.display = '';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('reports').innerHTML = '';
+            document.getElementById('filters').style.display = 'none';
+            document.getElementById('loginHeader').style.display = '';
+            document.getElementById('codeSearchBar').style.display = 'none';
+        };
+        document.getElementById('searchCodeInput').oninput = function() {
+            const code = this.value.trim().toUpperCase();
+            if (!code) {
+                filterAndRender();
+                return;
+            }
+            const filtered = allReports.filter(r => (r.code || '').toUpperCase().includes(code));
+            renderTable(filtered);
+        };
+    </script>
+</body>
+</html> 
