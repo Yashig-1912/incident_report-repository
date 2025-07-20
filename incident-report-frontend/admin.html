@@ -293,8 +293,9 @@
                     let descShort = desc.length > 60 ? desc.slice(0, 60) + '...' : desc;
                     let showMore = desc.length > 60;
                     if(descFilter) {
-                        const re = new RegExp(`(${descFilter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+                        const re = new RegExp(`(${descFilter.replace(/[.*+?^${}()|[\\]\\]/g, '\\$&')})`, 'gi');
                         desc = desc.replace(re, '<span class="highlight">$1</span>');
+                        descShort = descShort.replace(re, '<span class="highlight">$1</span>');
                     }
                     html += `<tr>
                         <td>${r.code || ''}</td>
@@ -371,6 +372,7 @@
                 filterAndRender();
                 return;
             }
+            // Use partial match (case-insensitive)
             const filtered = allReports.filter(r => (r.code || '').toUpperCase().includes(code));
             renderTable(filtered);
         };
