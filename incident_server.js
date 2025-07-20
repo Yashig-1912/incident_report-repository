@@ -29,6 +29,10 @@ console.log('Serving incident_admin from:', path.join(__dirname, 'incident-repor
 // Serve all static files from the root of incident-report-frontend
 app.use(express.static(path.join(__dirname, 'incident-report-frontend')));
 
+// Serve evidence files statically for local storage
+// NOTE: In production, use a cloud storage provider (e.g., Firebase Storage, AWS S3) for persistence and scalability.
+app.use('/evidence', express.static(path.join(__dirname, 'evidence')));
+
 // Redirect root to incident_index.html
 app.get('/', (req, res) => {
   res.redirect('/incident_index.html');

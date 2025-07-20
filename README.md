@@ -7,72 +7,104 @@
 You can access the live project here:  
 [https://incident-report-app.onrender.com](https://incident-report-app.onrender.com)
 
-A full-stack web platform for college students to anonymously report harassment or ragging incidents. Includes admin review, evidence upload, referral codes, complaint tracking, and more.
+---
+
+## Overview
+A full-stack web platform for college students to anonymously report harassment or ragging incidents. Includes admin review, evidence upload, unique complaint codes, complaint tracking, and more.
+
+---
+
+## Tech Stack
+- **Backend:** Node.js (Express, ES modules)
+- **Database:** Firebase Firestore (all complaints and remarks)
+- **Evidence Storage:** Local server folder (`/evidence`)
+- **Frontend:** HTML, CSS, JavaScript
+- **Deployment:** Render (Node.js web service)
+
+---
 
 ## Features
-- Anonymous incident reporting for students
-- Evidence file upload (images, documents)
-- Unique complaint code generation and tracking
-- Admin dashboard for reviewing, filtering, and updating complaints
-- Remarks and status management for each complaint
-- Modern, responsive UI for students and admins
+- Anonymous complaint submission
+- Evidence upload (files stored locally)
+- Admin dashboard (filter, search, update status/seriousness)
+- Complaint tracking and remarks
+- Unique complaint codes
+- Firebase Firestore for all structured data
+- Local evidence serving (with clear production limitations)
 
-## Project Structure
-- `incident_server.js` — Node.js/Express backend server
-- `incident_public/` — Student-facing frontend (HTML, CSS, JS)
-- `incident_admin/` — Admin dashboard frontend
-- `evidence/` — Uploaded evidence files
-- `incident_reports.json`, `incident_reports.csv` — Stored reports
-- `evidence.json`, `remarks.json` — Metadata and remarks
+---
 
-## Getting Started
+## Firebase Integration
+- All complaints and remarks are stored in Firestore.
+- Requires a `serviceAccountKey.json` file (not committed to git; see .gitignore).
+- **Evidence files are stored locally** due to Firebase Storage requiring billing. In production, use a cloud storage provider (Firebase Storage, AWS S3, etc.) for persistence.
 
-### Prerequisites
-- [Node.js](https://nodejs.org/) (v16 or higher recommended)
-- [Git](https://git-scm.com/)
-
-### Installation
-1. **Clone the repository:**
-   ```sh
-   git clone https://github.com/Yashig-1912/incident_report-repository.git
-   cd incident_report-repository
+### Setting up Firebase
+1. Create a Firebase project and enable Firestore.
+2. Download your service account key and save as `serviceAccountKey.json` in the project root.
+3. In `firebaseConfig.js`, ensure you use:
+   ```js
+   import admin from 'firebase-admin';
+   import { createRequire } from 'module';
+   const require = createRequire(import.meta.url);
+   const serviceAccount = require('./serviceAccountKey.json');
+   admin.initializeApp({
+     credential: admin.credential.cert(serviceAccount)
+     // storageBucket: 'your-bucket.appspot.com' // Only if using Firebase Storage
+   });
+   export default admin;
    ```
-2. **Install dependencies:**
+
+---
+
+## Data Migration
+- Use `migrate_to_firestore.js` to migrate old complaints and remarks from `.json` files to Firestore.
+- Evidence migration to cloud storage is not supported without billing; files remain local.
+
+---
+
+## Local Evidence Storage
+- Evidence files are uploaded to and served from the `/evidence` folder.
+- Files are accessible at `/evidence/filename.ext`.
+- **Limitation:** On cloud hosts like Render, files may be lost on redeploy. For production, use a persistent cloud storage solution.
+
+---
+
+## Running Locally
+1. Install dependencies:
    ```sh
    npm install
    ```
-3. **Start the server:**
+2. Place your `serviceAccountKey.json` in the project root.
+3. Start the server:
    ```sh
    node incident_server.js
    ```
-   The server will start on [http://localhost:3000](http://localhost:3000) by default.
+4. Access the frontend at [http://localhost:3001](http://localhost:3001)
 
-### Usage
+---
 
-- **Entry Point:**  
-  Open `http://localhost:3000/incident_public/incident_index.html` in your browser.  
-  This page allows students to register or track complaints, and now includes an **Admin Login** button just below the main box (right-aligned) for administrators.
+## Deployment (Render)
+- Push your code to GitHub.
+- Add `serviceAccountKey.json` as a Secret File in Render.
+- Deploy as a Node.js web service.
+- Evidence files will be stored locally on the Render instance (not persistent).
 
-- **Admin Dashboard:**  
-  Click the **Admin Login** button on the main page to access the admin dashboard (`incident_admin/admin.html`).
+---
 
-- **Tracking Page:**  
-  Students can track complaints directly from the main page.
+## Limitations & Recommendations
+- **Evidence files are not persistent on Render.**
+- **Firebase Storage requires billing; not used in this project.**
+- For production, migrate evidence to a cloud storage provider.
+- Clearly document this limitation in your project report.
 
-### File Uploads
-- Evidence files are stored in the `evidence/` directory.
-- Metadata is managed in `evidence.json`.
+---
 
-### Data Storage
-- Complaints are stored in `incident_reports.json` and `incident_reports.csv`.
-- Remarks are stored in `remarks.json`.
+## Security
+- `serviceAccountKey.json` is in `.gitignore` and must never be committed.
+- For production, set proper Firestore security rules.
 
-## Deployment
-- To make your site public, deploy the project to a Node.js hosting platform (e.g., Render, Railway, Heroku).
-- Update the server port and environment variables as needed for your host.
-
-## Contributing
-Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+---
 
 ## License
-This project is for educational purposes. 
+MIT 
