@@ -41,12 +41,16 @@ A full-stack web platform for college students to anonymously report harassment 
    The server will start on [http://localhost:3000](http://localhost:3000) by default.
 
 ### Usage
-- **Student Page:**
-  - Visit `http://localhost:3000/incident_public/incident_index.html` to file a complaint or track an existing one.
-- **Admin Dashboard:**
-  - Visit `http://localhost:3000/incident_admin/admin.html` to log in as admin, review, filter, and update complaints.
-- **Tracking Page:**
-  - Visit `http://localhost:3000/incident_public/track.html` to track a complaint using the unique code.
+
+- **Entry Point:**  
+  Open `http://localhost:3000/incident_public/incident_index.html` in your browser.  
+  This page allows students to register or track complaints, and now includes an **Admin Login** button just below the main box (right-aligned) for administrators.
+
+- **Admin Dashboard:**  
+  Click the **Admin Login** button on the main page to access the admin dashboard (`incident_admin/admin.html`).
+
+- **Tracking Page:**  
+  Students can track complaints directly from the main page.
 
 ### File Uploads
 - Evidence files are stored in the `evidence/` directory.
